@@ -1,10 +1,18 @@
 import cv2
 import json
 import argparse
+import os
 
+annotations = {
+    "metadata": {
+        "frame_width": 0,
+        "frame_height": 0,
+        "fps": 0
+    },
+    "frames": {}
+}  # Dictionary to store video metadata and bounding boxes per frame
 
-annotations = {}  # Dictionary to store bounding boxes per frame
-drawing = False
+drawing = True
 start_x, start_y = -1, -1
 current_frame = 0
 hovered_box = None  # Tracks which box the mouse is hovering over
@@ -41,7 +49,7 @@ def mouse_events(event, x, y, flags, param):
             cv2.imshow("Video Annotator", temp_frame)
         else:
             hovered_box = None
-            for box in annotations.get(current_frame, []):
+            for box in annotations["frames"].get(str(current_frame), []):
                 x1, y1, x2, y2 = box
                 if x1 < x < x2 and y1 < y < y2:
                     hovered_box = box
@@ -74,12 +82,25 @@ cv2.setMouseCallback("Video Annotator", mouse_events)
 
 cap = cv2.VideoCapture(inputFilePath)
 
+# Get video properties and add to metadata
+annotations["metadata"]["frame_width"] = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+annotations["metadata"]["frame_height"] = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+annotations["metadata"]["fps"] = int(cap.get(cv2.CAP_PROP_FPS))
 
 try:
     with open(outputFilePath, "r") as f:
-        annotations = json.load(f)
-
-    annotations = {int(k): v for k, v in annotations.items()}
+        loaded_annotations = json.load(f)
+    
+    # Handle both new and old format
+    if "frames" in loaded_annotations:
+        annotations["frames"] = {k: v for k, v in loaded_annotations["frames"].items()}
+        # Keep metadata from loaded file if available
+        if "metadata" in loaded_annotations:
+            annotations["metadata"] = loaded_annotations["metadata"]
+    else:
+        # Convert old format to new format
+        annotations["frames"] = {str(k): v for k, v in loaded_annotations.items() if k not in ["metadata"]}
+    
     print("Annotations loaded!")
 except:
     print("No saved annotations found.")
@@ -87,12 +108,13 @@ except:
 while cap.isOpened():
     cap.set(cv2.CAP_PROP_POS_FRAMES, current_frame)
     ret, frame = cap.read()
+    origin_frame = frame.copy()
     if not ret:
         break
 
     cv2.setTrackbarPos("Seek", "Video Annotator", current_frame)
 
-    frame = draw_boxes(frame, annotations.get(current_frame, []))
+    frame = draw_boxes(frame, annotations["frames"].get(str(current_frame), []))
     cv2.imshow("Video Annotator", frame)
 
     key = cv2.waitKey(30)
@@ -103,9 +125,9 @@ while cap.isOpened():
         if drawing:
             drawing = False
         elif hovered_box:
-            annotations[current_frame].remove(hovered_box)
-            if not annotations[current_frame]:  # Remove empty frame entries
-                del annotations[current_frame]
+            annotations["frames"][str(current_frame)].remove(hovered_box)
+            if not annotations["frames"][str(current_frame)]:  # Remove empty frame entries
+                del annotations["frames"][str(current_frame)]
             hovered_box = None
     elif key == ord("e"):
         if not drawing:
@@ -116,12 +138,14 @@ while cap.isOpened():
             end_x, end_y = xCurrent, yCurrent
             if abs(end_x - start_x) > 5 and abs(end_y - start_y) > 5:  # Prevent tiny boxes
                 box = (min(start_x, end_x), min(start_y, end_y), max(start_x, end_x), max(start_y, end_y))
-                annotations.setdefault(current_frame, []).append(box)
+                annotations["frames"].setdefault(str(current_frame), []).append(box)
     elif key == ord("d") and current_frame < lastFrame:  # Next frame
         current_frame += 1
     elif key == ord("a") and current_frame > firstFrame:  # Previous frame
         current_frame -= 1
     elif key == ord("s"):  # Save annotations
+        # Save frame as image
+        cv2.imwrite(f"images/train/frame_{current_frame}.jpg", origin_frame)
         with open(outputFilePath, "w") as f:
             json.dump(annotations, f, indent=4)
         print("Annotations saved!")

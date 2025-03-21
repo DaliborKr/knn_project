@@ -2,7 +2,14 @@ import cv2
 import numpy as np
 import json
 
-annotations = {}
+annotations = {
+    "metadata": {
+        "frame_width": 0,
+        "frame_height": 0,
+        "fps": 0
+    },
+    "frames": {}
+}
 
 video_path = "2024_03_01-11_00_01.mp4"
 cap = cv2.VideoCapture(video_path)
@@ -10,6 +17,11 @@ cap = cv2.VideoCapture(video_path)
 frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
 fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+# Add metadata to annotations
+annotations["metadata"]["frame_width"] = frame_width
+annotations["metadata"]["frame_height"] = frame_height
+annotations["metadata"]["fps"] = fps
 
 output_path = "beetles_annotated2.mp4"
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
@@ -39,8 +51,7 @@ while cap.isOpened() and frame_count < 100:
             cv2.putText(frame, "Beetle", (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
             box = (x, y, x+w, y+h)
-            annotations.setdefault(frame_count, []).append(box)
-
+            annotations["frames"].setdefault(str(frame_count), []).append(box)
 
     out.write(frame)
 
