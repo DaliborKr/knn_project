@@ -12,7 +12,7 @@ annotations = {
     "frames": {}
 }  # Dictionary to store video metadata and bounding boxes per frame
 
-drawing = True
+drawing = False
 start_x, start_y = -1, -1
 current_frame = 0
 hovered_box = None  # Tracks which box the mouse is hovering over
@@ -20,6 +20,9 @@ hovered_box = None  # Tracks which box the mouse is hovering over
 inputVideoPath = ""
 inputAnnotationPath = ""
 outputAnnotationPath = ""
+
+xCurrent = 0
+yCurrent = 0
 
 firstFrame = 0
 lastFrame = 0
