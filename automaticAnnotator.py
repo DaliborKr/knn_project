@@ -15,7 +15,7 @@ annotations = {
 parser = argparse.ArgumentParser()
 parser.add_argument("-v", "--video", help="Path to input video", required=True)
 parser.add_argument("-o", "--output", help="Path to output annotation file", default="annotations.json")
-parser.add_argument("-int", "--interval", nargs=2, type=int, metavar=("START", "END"), help="Interval of chosen frames", default=[1, 10])
+parser.add_argument("-int", "--interval", nargs=2, type=int, metavar=("START", "END"), help="Interval of chosen frames", default=[1, 9])
 
 args = parser.parse_args()
 

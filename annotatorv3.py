@@ -17,6 +17,8 @@ start_x, start_y = -1, -1
 current_frame = 0
 hovered_box = None  # Tracks which box the mouse is hovering over
 
+boxesVisible = True
+
 inputVideoPath = ""
 inputAnnotationPath = ""
 outputAnnotationPath = ""
@@ -31,14 +33,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-v", "--video", help="Path to input video", required=True)
 parser.add_argument("-i", "--input", help="Path to input annotation file", default="def.json")
 parser.add_argument("-o", "--output", help="Path to output annotation file", default="annotations.json")
-parser.add_argument("-int", "--interval", nargs=2, type=int, metavar=("START", "END"), help="Interval of chosen frames", default=[1, 10])
+parser.add_argument("-int", "--interval", nargs=2, type=int, metavar=("START", "END"), help="Interval of chosen frames", default=[0, 9])
 
 # Function to draw bounding boxes
 def draw_boxes(frame, boxes):
-    for box in boxes:
-        x1, y1, x2, y2 = box
-        color = (0, 255, 0) if box != hovered_box else (0, 0, 255)
-        cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+    if boxesVisible:
+        for box in boxes:
+            x1, y1, x2, y2 = box
+            color = (0, 255, 0) if box != hovered_box else (0, 0, 255)
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
     if drawing:
         cv2.rectangle(frame, (start_x, start_y), (xCurrent, yCurrent), (255, 0, 0), 2)
     return frame
@@ -163,6 +166,8 @@ while cap.isOpened():
         with open(outputAnnotationPath, "w") as f:
             json.dump(annotations, f, indent=4)
         print("Annotations saved!")
+    elif key == ord("r"):  # Makes visible/invisible other boxes
+        boxesVisible = not boxesVisible
 
 cap.release()
 cv2.destroyAllWindows()
