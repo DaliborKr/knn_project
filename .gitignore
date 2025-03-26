@@ -3,7 +3,7 @@
 videos/*
 *.pt
 runs
-
+*.jpg
 
 # Visual Studio Code files
 .vs
