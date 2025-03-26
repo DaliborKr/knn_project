@@ -3,3 +3,10 @@
 videos/*
 *.pt
 runs
+
+
+# Visual Studio Code files
+.vs
+/.vscode/*
+!/.vscode/extensions.json
+!/.vscode/settings_recommended.json
