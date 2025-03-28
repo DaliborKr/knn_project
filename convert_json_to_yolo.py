@@ -1,9 +1,21 @@
 import json
 import os
+import argparse
+import re
 
-def convert_json_to_yolo(json_path="annotations.json", output_dir="labels/train", class_id=0):
+# example usage: python convert_json_to_yolo.py -o cropImgTest/2/ -j testCropJson.json
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-j", "--json", help="Path to input json", required=True)
+parser.add_argument("-o", "--output", help="Path to output annotation file", default="annotations.json")
+
+args = parser.parse_args()
+
+def convert_json_to_yolo(json_path="annotated/d1_01.json", output_dir="labels/train", class_id=0):
 
     os.makedirs(output_dir, exist_ok=True)
+
+    json_name = re.sub(r".*/([^/]+)\.json$", r"\1", json_path)
 
     with open(json_path, "r") as f:
         data = json.load(f)
@@ -19,7 +31,7 @@ def convert_json_to_yolo(json_path="annotations.json", output_dir="labels/train"
         if "frames" in data:
             frames_data = data["frames"]
 
-    for frame_number, boxes in frames_data.items():
+    for frame_tag, boxes in frames_data.items():
         yolo_lines = []
         for box in boxes:
             if isinstance(box, list) and len(box) == 4:
@@ -37,8 +49,8 @@ def convert_json_to_yolo(json_path="annotations.json", output_dir="labels/train"
 
                 yolo_lines.append(f"{class_id} {center_x:.6f} {center_y:.6f} {width:.6f} {height:.6f}")
         # Save to file in YOLO format
-        output_file = os.path.join(output_dir, f"frame_{frame_number}.txt")
+        output_file = os.path.join(output_dir, f"{frame_tag}.txt")
         with open(output_file, "w") as f:
             f.write("\n".join(yolo_lines))
 
-convert_json_to_yolo()
+convert_json_to_yolo(json_path=args.json, output_dir=args.output)
