@@ -1,9 +1,8 @@
 import cv2
 import argparse
 import os
-import re
 import random
-
+from os.path import basename, splitext
 
 # example usage: python cropVideoImages -r 640 -d cropImgTest/3/ -n 30
 
@@ -48,11 +47,8 @@ videos = [
 
 frames_random = get_random_frames()
 
-
 for current_video, current_frame in frames_random:
-
-    video_name = re.sub(r".*/([^/]+)\.mp4$", r"\1", current_video)
-
+    video_name = splitext(basename(current_video))[0]
 
     cap = cv2.VideoCapture(current_video)
     cap.set(cv2.CAP_PROP_POS_FRAMES, current_frame)
@@ -67,7 +63,6 @@ for current_video, current_frame in frames_random:
     cropped_frame = frame[y1:y2, x1:x2]
 
     image_path = os.path.join(output_dir, f"{video_name}-r{resolution}-f{current_frame}.jpg")
-      # Save the frame as an image
     if cv2.imwrite(image_path, cropped_frame):
         print(f"Saved {image_path} -> video: {current_video}, frame: {current_frame} ({x1}, {y1} ; {x2}, {y2})")
     else:
