@@ -3,6 +3,7 @@ import json
 import argparse
 import os
 import numpy as np
+from os.path import basename, splitext
 
 annotations = {
     "metadata": {
@@ -24,8 +25,8 @@ panning = False
 start_pan_x, start_pan_y = 0, 0
 offset_x, offset_y = 0.0, 0.0
 scale = 1.0
-WINDOW_WIDTH = 1600
-WINDOW_HEIGHT = 900
+WINDOW_WIDTH = 640
+WINDOW_HEIGHT = 640
 
 inputFolderPath = ""
 inputAnnotationPath = ""
@@ -34,9 +35,9 @@ xCurrent, yCurrent = 0, 0
 firstFrame, lastFrame = 0, 0
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-f", "--video", help="Path to input folder", default="F:/datasets/dataset2 - kopie/train/images")
-parser.add_argument("-i", "--input", help="Path to input annotation file", default="annotated\\test.json")
-parser.add_argument("-o", "--output", help="Path to output annotation file", default="annotated\\test.json")
+parser.add_argument("-f", "--video", help="Path to input folder", default="images\\run1")
+parser.add_argument("-i", "--input", help="Path to input annotation file", default="annotated\\run1.json")
+parser.add_argument("-o", "--output", help="Path to output annotation file", default="annotated\\run1.json")
 
 def clip_to_bounds(x1, y1, x2, y2, width, height):
     """Clips the box coordinates to fit within the image bounds."""
@@ -154,19 +155,21 @@ def parseArgs():
 
 def load_images_from_folder(folder):
     images = []
+    imageNames = []
     for filename in os.listdir(folder):
         path = os.path.join(folder, filename)
         img = cv2.imread(path)
         if img is None:
             print(f"Error: Cannot load '{path}'")
         else:
+            imageNames.append(splitext(basename(filename))[0])
             images.append(img)
-    return images
+    return images, imageNames
 
 parseArgs()
 
 
-images = load_images_from_folder(inputFolderPath)
+images, imageNames = load_images_from_folder(inputFolderPath)
 if not images:
     print(f"Error: Folder '{inputFolderPath}' contains no images or the path is incorrect!")
     exit(1)
@@ -198,6 +201,7 @@ if (original_height == 0 or original_width == 0):
 
 while True:
     frame = images[current_frame] if current_frame < len(images) else None
+    frameName = imageNames[current_frame]
     if frame is None:
         print(f"Error: Invalid frame at index {current_frame}")
         continue
@@ -216,7 +220,7 @@ while True:
     else:
         resized_roi = np.zeros((WINDOW_HEIGHT, WINDOW_WIDTH, 3), dtype=np.uint8)
 
-    display_frame = draw_boxes(resized_roi, annotations["frames"].get(str(current_frame), []))
+    display_frame = draw_boxes(resized_roi, annotations["frames"].get(frameName, []))
     cv2.imshow("Video Annotator", display_frame)
 
     key = cv2.waitKey(30)
@@ -225,9 +229,9 @@ while True:
         break
     elif key == ord("q"):
         if hovered_box:
-            annotations["frames"][str(current_frame)].remove(hovered_box)
-            if not annotations["frames"][str(current_frame)]:
-                del annotations["frames"][str(current_frame)]
+            annotations["frames"][frameName].remove(hovered_box)
+            if not annotations["frames"][frameName]:
+                del annotations["frames"][frameName]
             hovered_box = None
     elif key == ord("e"):
         if not drawing:
@@ -241,7 +245,7 @@ while True:
             if abs(end_x - start_x) > 5 and abs(end_y - start_y) > 5:
                 box = (int(min(start_x, end_x)), int(min(start_y, end_y)),
                         int(max(start_x, end_x)), int(max(start_y, end_y)))
-                annotations["frames"].setdefault(str(current_frame), []).append(box)
+                annotations["frames"].setdefault(frameName, []).append(box)
     elif key == ord("d") and current_frame < lastFrame:
         current_frame += 1
         cv2.setTrackbarPos("Seek", "Video Annotator", current_frame)
@@ -249,7 +253,7 @@ while True:
         current_frame -= 1
         cv2.setTrackbarPos("Seek", "Video Annotator", current_frame)
     elif key == ord("s"):
-        cv2.imwrite(f"images/train/frame_{current_frame}.jpg", frame)
+        #cv2.imwrite(f"images/train/frame_{current_frame}.jpg", frame)
         with open(outputAnnotationPath, "w") as f:
             json.dump(annotations, f, indent=4)
         print("Annotations saved!")
