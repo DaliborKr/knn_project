@@ -97,7 +97,7 @@ def mouse_events(event, x, y, flags, param):
             hovered_box = None
             original_x = x / scale + offset_x
             original_y = y / scale + offset_y
-            for box in annotations["frames"].get(str(current_frame), []):
+            for box in annotations["frames"].get(frameName, []):
                 x1, y1, x2, y2 = box
                 if x1 <= original_x <= x2 and y1 <= original_y <= y2:
                     hovered_box = box
