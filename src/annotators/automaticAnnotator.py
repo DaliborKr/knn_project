@@ -26,9 +26,6 @@ start_frame = args.interval[0]
 end_frame = args.interval[1]
 
 
-
-
-
 cap = cv2.VideoCapture(video_path)
 
 frame_width = int(cap.get(3))

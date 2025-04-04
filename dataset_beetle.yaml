@@ -1,6 +1,0 @@
-train: dataset1/train
-val: dataset1/val
-
-nc: 1
-
-names: ["beetle"]

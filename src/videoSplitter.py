@@ -32,20 +32,20 @@ os.makedirs(output_dir, exist_ok=True)
 
 while cap.isOpened():
     ret, frame = cap.read()
-    
+
     if not ret:
         break  # End of video
-    
+
     # If the frame count is a multiple of `frames_per_segment`, start a new segment
     if frame_count % segment_size == 0:
         # Define output file name for the new segment
         end_segment_frame = frame_count + segment_size - 1 if frame_count + segment_size - 1 < total_frames - 1 else total_frames - 1
         segment_file = os.path.join(output_dir, f'{name_only}_{frame_count}-{end_segment_frame}.mp4')
-        
+
         # Initialize a VideoWriter for the new segment
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # You can change codec here
         out = cv2.VideoWriter(segment_file, fourcc, fps, (frame_width, frame_height))
-    
+
     out.write(frame)
     frame_count += 1
 

@@ -4,6 +4,8 @@ videos/*
 *.pt
 runs
 *.jpg
+*.txt
+BuoT/*
 
 # Visual Studio Code files
 .vs
