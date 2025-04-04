@@ -4,7 +4,7 @@ from ultralytics import YOLO
 model = YOLO("runs\\detect\\train19\\weights\\best.pt")  # load a custom model
 
 # Validate the model
-metrics = model.val(data = "dataset_beetle.yaml", imgsz = 1920, 
+metrics = model.val(data = "F:\\datasets\\datasetTest\\dataset_beetle.yaml", imgsz = 1920, 
                     batch = 8, epochs = 100, workers = 0, device = 0, plots = True, max_det = 1000)
 metrics.box.map  # map50-95
 metrics.box.map50  # map50

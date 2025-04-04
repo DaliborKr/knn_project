@@ -9,7 +9,7 @@ from ultralytics import YOLO
 model = YOLO("runs\\detect\\train19\\weights\\best.pt")
 
 # Open the video file
-video_path = "BuoT\\Density1\\d1_01.mp4"
+video_path = "BuoT\\d1_01.mp4"
 cap = cv2.VideoCapture(video_path)
 
 # Store the track history
@@ -29,7 +29,7 @@ while cap.isOpened():
         track_ids = results[0].boxes.id.int().cpu().tolist()
 
         # Visualize the results on the frame
-        annotated_frame = results[0].plot(labels=False, conf=False)
+        annotated_frame = results[0].plot(labels=False, conf=False, color_mode="instance", line_width=2)
 
         # Plot the tracks
         for box, track_id in zip(boxes, track_ids):
