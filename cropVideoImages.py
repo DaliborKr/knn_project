@@ -4,7 +4,7 @@ import os
 import random
 from os.path import basename, splitext
 
-# example usage: python cropVideoImages -r 640 -d cropImgTest/3/ -n 30
+# example usage: python cropVideoImages.py -r 640 -d cropImgTest/3/ -n 30
 
 def set_coordinates(frame_width, frame_height):
     x = random.randint(0, frame_width - resolution - 1)

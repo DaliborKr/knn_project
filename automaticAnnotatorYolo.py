@@ -50,7 +50,7 @@ annotations["metadata"]["frame_height"] = data_height
 for img in images:
     current_frame_name = splitext(basename(img))[0]
 
-    results = model(img, max_det=1000, conf=0.25, iou=0.7, augment=True)
+    results = model(img, max_det=1000, conf=0.50, iou=0.4, augment=False)
 
     for result in results:
         for box in result.boxes.data:

@@ -40,7 +40,7 @@ def draw_boxes(frame, boxes):
         for box in boxes:
             x1, y1, x2, y2 = box
             color = (0, 255, 0) if box != hovered_box else (0, 0, 255)
-            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 1)
     if drawing:
         cv2.rectangle(frame, (start_x, start_y), (xCurrent, yCurrent), (255, 0, 0), 1)
     return frame
