@@ -6,10 +6,10 @@ import numpy as np
 from ultralytics import YOLO
 
 # Load the YOLO11 model
-model = YOLO("runs\\detect\\train19\\weights\\best.pt")
+model = YOLO("runs\\detect\\train21\\weights\\best.pt")
 
 # Open the video file
-video_path = "BuoT\\d1_01.mp4"
+video_path = "BuoT\\d4_02.mp4"
 cap = cv2.VideoCapture(video_path)
 
 # Store the track history
@@ -22,7 +22,7 @@ while cap.isOpened():
 
     if success:
         # Run YOLO11 tracking on the frame, persisting tracks between frames
-        results = model.track(frame, persist=True, tracker="botsort_beetle.yaml", max_det=1000, conf=0.4, iou=0.5, imgsz=1920, augment=False)
+        results = model.track(frame, persist=True, tracker="botsort_beetle.yaml", max_det=2000, conf=0.4, iou=0.5, imgsz=1920, augment=False)
 
         # Get the boxes and track IDs
         boxes = results[0].boxes.xywh.cpu()
