@@ -13,14 +13,14 @@ model = YOLO("runs/detect/train21/weights/best.pt")
 video_path = "BuoT/d4_01.mp4"
 cap = cv2.VideoCapture(video_path)
 
-output_tracks_path = "tracking_results/tracks_test1.json"
+output_tracks_path = "tracking_results/tracks_test3.json"
 
 # Store the track history
 track_history = defaultdict(lambda: [])
 
 tracks_all = {}
 
-current_frame = 1
+current_frame = 0
 
 # Loop through the video frames
 while cap.isOpened():
