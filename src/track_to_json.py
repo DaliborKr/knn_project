@@ -49,7 +49,7 @@ while cap.isOpened():
 
             box = [x1, y1, x2, y2]
 
-            tracks_all.setdefault(str(track_id), {}).setdefault(str(current_frame), []).append(box)
+            tracks_all.setdefault(str(current_frame), {}).setdefault(str(track_id), []).append(box)
 
             # tracks_all["ids"].setdefault(str(track_id), []).append({
             #     "frame": current_frame,
