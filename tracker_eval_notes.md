@@ -41,6 +41,6 @@ Možnosti:
 - Surrogate metrics bez GT (heuristiky)
 - Např.:
     - Average track length – pokud jsou tracky často krátké, značí to časté ztráty.
-    - Track fragmentation count – kolikrát track skončí a znovu začne.
+    - Track fragmentation count – kolikrát track skončí a znovu začne - FRAGMENTATION
     - Number of unique track IDs – pokud tracker vytváří hodně ID, může to indikovat over-splittin
 
