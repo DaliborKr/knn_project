@@ -3,7 +3,7 @@ from shapely.geometry import box
 from collections import defaultdict
 import re
 import os
-
+import sys
 
 def iou(b1, b2):
     """Calculate IoU between two [x1, y1, x2, y2] boxes."""
@@ -137,15 +137,20 @@ def evaluate_partial_track(gt_frames, tracker_frames, start_frame, iou_thresh=0.
 
 
 # INPUT:
-gt_dir = "ground_truth_tracks_test"
+gt_dir = "ground_truth_tracks"
 trackers_output_dir = "tracking_results_botsort"
+
+
+results_file_path = "eval_results/eval1/eval_botsort.json"
 
 
 
 gt_filenames = os.listdir(gt_dir)
 
-max_eval = 1000000
+max_eval = 10000
 eval_cnt = 0
+
+results_all = []
 
 idtp = 0
 idfp = 0
@@ -172,7 +177,7 @@ for gt_filename in gt_filenames:
             continue
 
 
-        print(f"Ground truth file: {os.path.basename(gt_path)}, Tracker output file: {os.path.basename(tracker_path)}")
+        print(f"Ground truth file: {os.path.basename(gt_path)}, Tracker output file: {tracker_path}")
 
 
         start_frame = int(match.group(2))
@@ -181,6 +186,9 @@ for gt_filename in gt_filenames:
         gt_frames, tracker_frames = load_gt_and_tracker(gt_path, tracker_path)
         results = evaluate_partial_track(gt_frames, tracker_frames, start_frame)
         print(f"{os.path.basename(gt_path)} results: {results}\n")
+
+        results["GT_FILENAME"] = os.path.basename(gt_path)
+        results_all.append(results)
 
 
         idtp += results["IDTP"]
@@ -202,6 +210,8 @@ for gt_filename in gt_filenames:
     if eval_cnt >= max_eval:
         break
 
+    sys.stdout.flush()
+
 
 idPrecision, idRecall, idf1 = calculate_prec_rec_idf1(idtp, idfp, idfn)
 mean_different_ids_cnt = sum(different_ids_cnts) / len(different_ids_cnts)
@@ -216,7 +226,12 @@ final_results = {"IDTP": idtp,
         "FRAG": fragmentations,
         "ID_SWITCH": id_switches,
         "MEAN_DIFF_IDS_CNT": mean_different_ids_cnt,
-        "MEAN_BEST_TRACK_LEN": mean_best_track_length
+        "MEAN_BEST_TRACK_LEN": mean_best_track_length,
+        "GT_FILENAME": "ALL"
     }
 
+results_all.append(final_results)
 print(final_results)
+
+with open(results_file_path, "w") as f:
+                json.dump(results_all, f, indent=4)
