@@ -9,11 +9,13 @@ from ultralytics import YOLO
 # Load the YOLO11 model
 model = YOLO("runs/detect/train21/weights/best.pt")
 
+video_name = "d3_01"
+
 # Open the video file
-video_path = "BuoT/d4_01.mp4"
+video_path = f"BuoT/{video_name}.mp4"
 cap = cv2.VideoCapture(video_path)
 
-output_tracks_path = "tracking_results/tracks_test3.json"
+output_tracks_path = f"tracking_results_bytetrack/{video_name}.json"
 
 # Store the track history
 track_history = defaultdict(lambda: [])
@@ -22,22 +24,24 @@ tracks_all = {}
 
 current_frame = 0
 
+show = False
+
 # Loop through the video frames
 while cap.isOpened():
     # Read a frame from the video
     success, frame = cap.read()
+    print(f"Current frame: {current_frame}")
 
     if success:
         # Run YOLO11 tracking on the frame, persisting tracks between frames
-        results = model.track(frame, persist=True, tracker="botsort_beetle.yaml", max_det=2000, conf=0.4, iou=0.5, imgsz=1920, augment=False)
+        results = model.track(frame, persist=True, tracker="bytetrack.yaml", max_det=2000, conf=0.4, iou=0.5, imgsz=1920)
 
         # Get the boxes and track IDs
         boxes = results[0].boxes.xyxy.cpu()
         track_ids = results[0].boxes.id.int().cpu().tolist()
 
         # Visualize the results on the frame
-        annotated_frame = results[0].plot(labels=False, conf=False, color_mode="instance", line_width=2)
-
+        if (show): annotated_frame = results[0].plot(labels=False, conf=False, color_mode="instance", line_width=2)
         # Plot the tracks
         for box, track_id in zip(boxes, track_ids):
             x1, y1, x2, y2 = box
@@ -64,10 +68,10 @@ while cap.isOpened():
 
             # Draw the tracking lines
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
-            cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=2)
+            if (show): cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=2)
 
         # Display the annotated frame
-        cv2.imshow("YOLO11 Tracking", annotated_frame)
+        if (show): cv2.imshow("YOLO11 Tracking", annotated_frame)
 
         # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -84,4 +88,4 @@ while cap.isOpened():
 
 # Release the video capture object and close the display window
 cap.release()
-cv2.destroyAllWindows()
+if (show): cv2.destroyAllWindows()
