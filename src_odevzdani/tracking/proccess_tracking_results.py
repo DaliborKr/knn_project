@@ -8,6 +8,10 @@ import re
 import seaborn as sns
 
 
+RESULTS_DIR = "tracking_eval_results"
+IDF1_HEATMAP_OUT_PATH = "plots/idf1_heatmap.png"
+
+
 def generate_latex_table(results_dict):
     headers = [
         "Tracker", "IDF1", "IDPrec", "IDRec",
@@ -56,7 +60,7 @@ def generate_latex_table(results_dict):
 
 
 
-results_dir = "eval_results/eval2"
+results_dir = RESULTS_DIR
 
 trackers = []
 id_prec = []
@@ -86,7 +90,6 @@ for results_filename in results_filenames:
             # final result
             result = next((entry for entry in results if entry.get("GT_FILENAME") == "ALL"), None)
 
-
             trackers.append(match.group(1))
             id_prec.append(result["IDPrecision"])
             id_recall.append(result["IDRecall"])
@@ -102,9 +105,6 @@ for results_filename in results_filenames:
 
             results_gt.setdefault(result["GT_FILENAME"], {})[match.group(1)] = result["IDF1"]
 
-
-# TODO select records with at least one bad IDF1 (thresh hold = 0.85?)
-# TODO do the same thing for id switches
 
 
 threshold = 0.8
@@ -123,48 +123,9 @@ plt.ylabel("Ground Truth Track File")
 plt.xticks(fontsize=8)
 plt.yticks(fontsize=8)
 plt.tight_layout()
-plt.savefig("plots/idf1_heatmap.png", dpi=300)  # Save as PNG with high resolution
+plt.savefig(IDF1_HEATMAP_OUT_PATH, dpi=300)  # Save heatmap
 #plt.show()
 
 latex_str = generate_latex_table(result_all)
 print("\nLatex table format:\n")
 print(latex_str)
-
-
-# plt.bar(trackers, idf1)
-# plt.title("IDF1 Comparison")
-# plt.ylabel("IDF1 Score")
-# plt.ylim(0, 1)
-# plt.show()
-
-
-# x = np.arange(len(trackers))
-# width = 0.25
-
-# fig, ax = plt.subplots()
-# ax.bar(x - width, idf1, width, label='IDF1')
-# ax.bar(x, id_switch, width, label='ID Switches')
-# ax.bar(x + width, frag, width, label='Fragments')
-
-# ax.set_ylabel('Score / Count')
-# ax.set_title('Tracker Comparison')
-# ax.set_xticks(x)
-# ax.set_xticklabels(trackers)
-# ax.legend()
-
-# plt.show()
-
-
-
-# df = pd.DataFrame({
-#     'metric': ['IDF1', 'Precision', 'Recall', 'ID_SWITCH', 'FRAG'],
-#     'Tracker A': [0.96, 0.98, 0.95, 2, 1],
-#     'Tracker B': [0.91, 0.92, 0.90, 8, 4]
-# })
-
-# # Convert to long format for Plotly
-# df_long = df.melt(id_vars='metric', var_name='Tracker', value_name='Score')
-
-# # Plot with color by tracker
-# fig = px.line_polar(df_long, r='Score', theta='metric', color='Tracker', line_close=True)
-# fig.show()
