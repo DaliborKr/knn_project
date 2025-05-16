@@ -10,12 +10,12 @@
 
 ## Data k projektu
 
-Všeškerá data relevatní k tomuto projektu je možné nalézt na [Goole Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing).
+Veškerá data relevatní k tomuto projektu je možné nalézt na [Google Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing).
 
 Odkazovaný adresář obsahuje konkrétně následující položky:
  - `beetle_detection_model/` - dotrénovaný detekční model pro detekci brouků
  - `dataset_annotated_detection/` - datová sada s anotacemi brouků pro dotrénování modelu
- - `dataset_ground_truth_tracks/` - datová anotovaných (ground truth) tras jednotlivých brouků pro vyhodnocení trackingu
+ - `dataset_ground_truth_tracks/` - datová sada anotovaných (ground truth) tras jednotlivých brouků pro vyhodnocení trackingu
  - `original_videos/` - původní dostupná data/videa, ze kterých projekt vychází
  - `splitted_videos/` - úryvky původních videí po 150 snímcích pro účely vytváření anotací jednotlivých tras
  - `tracking_results/` - výsledky trasování zmiňovaných tracking algoritmů pro jednotlivá původních videa (pro celé záznamy) - použito pro vyhodnocení přesnosti trasování
@@ -37,19 +37,19 @@ Zdrojové soubory skriptů využité při práci na projektu:
         * convert_boxmot_to_json.py
         * convert_json_to_yolo.py
 
-    * `detection/` -
+    * `detection/` - Nástroje k dotrénování, validaci a testovací výstup detekčního modelu
         * predict.py
         * train.py
         * validation.py
 
-    * `tracking/` -
+    * `tracking/` - Nástroje a konfigurace pro tracking a jeho vyhodnocení
         * **beetle_tracker.py - produkuje strojově zpracovatelný výstup tras brouků pro zvolený video záznam**
         * botsort_beetle.yaml
         * bytetrack_beetle.yaml
         * evaluate_tracking.py
         * proccess_tracking_results.py
 
-    * `video_processing/` -
+    * `video_processing/` - Pomocné nástroje pro zpracování videí
         * crop_video_images.py
         * video_splitter.py
 
@@ -58,7 +58,7 @@ Zdrojové soubory skriptů využité při práci na projektu:
 ### Nástroje pro anotování
 ### `annotator_detection.py` a `annotator_detection_win.py`:
 
-Nástroj načte snímky s brouky z adresáře, které je třeba anotovat, a spustí GUI ve kterém je možné pomocí klávesnice a myši všechny objety označit příslušnými _bounding boxy_. Následně ukládá data v _JSON_ formátu, který obsahuje souřadince vytvořených bounding boxů pro jednotlivé snímky.
+Nástroj načte snímky s brouky z adresáře, které je třeba anotovat, a spustí GUI ve kterém je možné pomocí klávesnice a myši všechny objekty označit příslušnými _bounding boxy_. Následně ukládá data v _JSON_ formátu, který obsahuje souřadnice vytvořených bounding boxů pro jednotlivé snímky.
 
 Ovládání:
 ```
@@ -99,7 +99,7 @@ Výstup tohoto programu je možné pomocí převodníku `convert_json_to_yolo.py
 
 Nástroj načte video a spustí GUI ve kterém je možné pomocí klávesnice a myši označit příslušnými _bounding boxy_ brouků. Konkrétně na každém snímku jednoho, čímž je vytvořena ground truth jedné trasy pro určitého brouka. Následně ukládá data v _JSON_ formátu, který obsahuje souřadince vytvořených bounding boxů pro jednotlivé snímky videa.
 
-Je doporučené na vstup volit videa s maximálně 400 snímky pro zachování plynulosti programu. Pro rozdělení původních videí do kratších segmentů je možné využít nástroj `video_splitter.py`. Případně jsou dostupné již rozdělené záznamy po 150 snímcích v adresáři `splitted_videos/` na [Goole Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing).
+Je doporučené na vstup volit videa s maximálně 400 snímky pro zachování plynulosti programu. Pro rozdělení původních videí do kratších segmentů je možné využít nástroj `video_splitter.py`. Případně jsou dostupné již rozdělené záznamy po 150 snímcích v adresáři `splitted_videos/` na [Google Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing).
 
 Ovládání:
 ```
@@ -132,11 +132,11 @@ Verze programu:
  - pro Linux: `annotator_gt_tracking.py`
  - pro Windows: `annotator_gt_tracking_win.py`
 
-Formát výstupu tohoto programu je v kompatibilní se vstupem programu `evaluate_tracking.py` pro vyhodnocení trasovacích algoritmů a slouží jako ground truth tras brouků.
+Formát výstupu tohoto programu je kompatibilní se vstupem programu `evaluate_tracking.py` pro vyhodnocení trasovacích algoritmů a slouží jako ground truth tras brouků.
 
 ### Převodníky
 ### `convert_boxmot_to_json.py`
-Načte výstup z nástroje [BoxMot](https://github.com/mikel-brostrom/boxmot), který poskytuje implementaci různým trasovacích algoritmů a převe de jej do požadovaného formátu v JSON souboru. Tento JSON tedy obsahuje výsledky tras všech brouků napříč celým videem.
+Načte výstup z nástroje [BoxMot](https://github.com/mikel-brostrom/boxmot), který poskytuje implementaci různých trasovacích algoritmů a převede jej do požadovaného formátu v JSON souboru. Tento JSON tedy obsahuje výsledky tras všech brouků napříč celým videem.
 
 Spuštění:
 ```
@@ -146,7 +146,7 @@ convert_boxmot_to_json.py
 
 ```
 
-Formát výstupu tohoto programu je v kompatibilní se vstupem programu `evaluate_tracking.py` pro vyhodnocení trasovacích algoritmů a slouží jako výsledky trasování brouků.
+Formát výstupu tohoto programu je kompatibilní se vstupem programu `evaluate_tracking.py` pro vyhodnocení trasovacích algoritmů a slouží jako výsledky trasování brouků.
 
 ### `convert_json_to_yolo.py`
 
@@ -225,11 +225,11 @@ Vyhodnotí metriky trasování zmiňované v technické zprávě pro zadané gro
 
 Vstup:
 
-* Složka s vytvořenými vstupními ground truth soubory je dostupná v adresáři `dataset_ground_truth_tracks/`, složka s již vygenerovánými výstupy jednotlivých trasovacích algoritmů jsou ve složce `tracking_results/` na [Goole Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing).
+* Složka s vytvořenými vstupními ground truth soubory je dostupná v adresáři `dataset_ground_truth_tracks/`, složka s již vygenerovánými výstupy jednotlivých trasovacích algoritmů jsou ve složce `tracking_results/` na [Google Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing).
 
 Výstup:
 
-* Příklad výstupů tohoto programu je umístěn ve složce `tracking_eval_results/` na [Goole Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing).
+* Příklad výstupů tohoto programu je umístěn ve složce `tracking_eval_results/` na [Google Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing).
 
 Spuštění:
 ```
@@ -254,7 +254,7 @@ proccess_tracking_results.py
 ### `crop_video_images.py`
 Vytvoří zadaný počet čtvercových výstřižků z původních videozáznamů brouků o zadaném rozlišení. Výběr videa, snímku a umístění čtvercového výřezu je proveden náhodně. Výsledné výstřižky uloží do zvoleného adresáře ve formátu JPG. Slouží jako zdroj snímků pro anotaci pomocí nástroje `annotator_detection.py`.
 
-Vyžaduje přítomnost složky `BuoT/` s původními videi v kořenovém adresáři (dostupné ve složce `original_videos/` na [Goole Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing)).
+Vyžaduje přítomnost složky `BuoT/` s původními videi v kořenovém adresáři (dostupné ve složce `original_videos/` na [Google Drive](https://drive.google.com/drive/folders/10Eu2y_Ief9yyekn0N4Fv8GMXV4uJlnSl?usp=sharing)).
 
 Spuštění:
 ```
@@ -269,7 +269,7 @@ options:
 
 ### `video_splitter.py`
 
-Rozdělí zadané video na segmenty podle zvoleného počtu snímků a uloží je v podově kratších MP4 záznamů do výstupního adresáře. Slouží vy vytvoření menších vstupních videí pro anotování tras v nástroji `annotator_gt_tracking.py` pro jeho lepší výkonnost.
+Rozdělí zadané video na segmenty podle zvoleného počtu snímků a uloží je v podobě kratších MP4 záznamů do výstupního adresáře. Slouží k vytvoření menších vstupních videí pro anotování tras v nástroji `annotator_gt_tracking.py` pro jeho lepší výkonnost.
 
 
 ```
@@ -279,6 +279,6 @@ options:
   -h, --help                  vypíše nápovědu k programu
   -v, --video VIDEO           cesta ke vstupnímu videu
   -d, --directory DIRECTORY   cesta k výstupnímu adresáři pro uložení části videa
-  -s, --segment SEGMENT       počet snímků podle kterého je původní video rozdělěno
+  -s, --segment SEGMENT       počet snímků podle kterého je původní video rozděleno
   -int, --interval START END  čísla segmentů které mají být uloženy (interval)
 ```
