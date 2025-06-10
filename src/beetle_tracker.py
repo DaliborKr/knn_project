@@ -56,9 +56,9 @@ current_frame = 0
 show = args.show
 
 if (args.bytetrack and not args.botsort): 
-    tracker_path = "bytetrack.yaml"
+    tracker_path = os.path.join("tracker_configs", "bytetrack.yaml")
 elif (args.botsort and not args.bytetrack):
-    tracker_path = "botsort.yaml"
+    tracker_path = os.path.join("tracker_configs", "botsort.yaml")
 else:
     exit("Choose one tracker --bytetrack or --botsort")
 
@@ -122,10 +122,10 @@ while cap.isOpened() and not kill_signal:
             video_writer.write(annotated_frame)
 
         # Display the annotated frame
-        if (show): cv2.imshow("YOLO11 Tracking", annotated_frame)
-        # Break the loop if 'q' is pressed
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
+        if (show): 
+            cv2.imshow("YOLO11 Tracking", annotated_frame)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
     else:
         # Break the loop if the end of the video is reached
         break
