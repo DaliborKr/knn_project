@@ -19,7 +19,7 @@ parser.add_argument("--save_video", help="Save video to set directory", default=
 parser.add_argument('--track_length', type=int, default=300, help='Set from how many previous frames should tracks be visible')
 
 parser.add_argument("--botsort", help="Use botsort for tracking", action="store_true")
-parser.add_argument("--bytetrack", help="Use botsort for tracking", action="store_true")
+parser.add_argument("--bytetrack", help="Use bytetrack for tracking", action="store_true")
 
 args = parser.parse_args()
 
@@ -30,7 +30,8 @@ model = YOLO(args.model)
 
 save_video = False
 if (args.save_video != None):
-    save_video_path = os.path.join(args.output, f"/{video_name}_tracks.mp4")
+    save_video_path = os.path.join(args.save_video, f"{video_name}_tracks.mp4")
+    os.makedirs(os.path.dirname(save_video_path), exist_ok=True)
     save_video = True
 
 video_path = args.video
@@ -38,7 +39,8 @@ cap = cv2.VideoCapture(video_path)
 
 save_tracks = False
 if (args.output != None):
-    save_tracks_path = os.path.join(args.output, f"/{video_name}_tracks.json")
+    save_tracks_path = os.path.join(args.output, f"{video_name}_tracks.json")
+    os.makedirs(os.path.dirname(save_tracks_path), exist_ok=True)
     save_tracks = True
 
 # Store the track history
@@ -109,7 +111,7 @@ while cap.isOpened() and not kill_signal:
             if video_writer is None:
                 fps = int(cap.get(cv2.CAP_PROP_FPS))
                 height, width = annotated_frame.shape[:2]
-                # Use 'mp4v' codec for .mp4 output (adjust if needed)
+                # Use 'mp4v' codec for .mp4 output
                 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
                 video_writer = cv2.VideoWriter(
                     save_video_path, 
@@ -121,7 +123,6 @@ while cap.isOpened() and not kill_signal:
 
         # Display the annotated frame
         if (show): cv2.imshow("YOLO11 Tracking", annotated_frame)
-
         # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
